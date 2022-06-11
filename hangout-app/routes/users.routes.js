@@ -26,7 +26,9 @@ router.get("/users/:id", async (req, res, next) => {
 router.post("/users/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
-    const updatedUser = await User.findByIdAndUpdate(id, req.body);
+    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
     res.status(200).json(updatedUser);
   } catch (error) {
     res.sendStatus(400);
