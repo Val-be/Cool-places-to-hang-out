@@ -1,19 +1,14 @@
 const { Schema, model } = require("mongoose");
 
 // TODO: Please make sure you edit the user model to whatever makes sense in this case
-const userSchema = new Schema(
+const placeSchema = new Schema(
   {
-    username: {
+    Name: {
       type: String,
       // unique: true -> Ideally, should be unique, but its up to you
     },
-    password: String,
-    email: String,
-    role: {
-      type: String,
-      enum: ['admin', 'user'],
-      default: 'user',
-    },
+    location: String,
+    Type: String,
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
@@ -21,6 +16,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = model("User", userSchema);
+const Place = model("User", placeSchema);
 
-module.exports = User;
+module.exports = Place;
