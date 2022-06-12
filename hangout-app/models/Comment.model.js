@@ -8,14 +8,13 @@ const commentSchema = new Schema(
       // unique: true -> Ideally, should be unique, but its up to you
     },
     user: {
-        type: SchemaTypes.ObjectId,
-        ref: 'User',
-      },
-      place:{
-        type: SchemaTypes.ObjectId,
-        ref: 'Place',
-      } 
-    
+      type: SchemaTypes.ObjectId,
+      ref: "User",
+    },
+    place: {
+      type: SchemaTypes.ObjectId,
+      ref: "Place",
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
@@ -23,6 +22,6 @@ const commentSchema = new Schema(
   }
 );
 
-const Comment = model("User", commentSchema);
+const Comment = model("Comment", commentSchema);
 
 module.exports = Comment;

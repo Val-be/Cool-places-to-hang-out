@@ -1,45 +1,45 @@
-const User = require("../models/User.model");
+const Place = require("../models/Place.model");
 const router = require("express").Router();
 
-//Fetch all users
+//Fetch all places
 router.get("/", async (req, res, next) => {
   try {
-    const foundUsers = await User.find();
-    res.status(200).json(foundUsers);
+    const foundPlaces = await Place.find();
+    res.status(200).json(foundPlaces);
   } catch (error) {
     res.sendStatus(404);
   }
 });
 
-//Fetch user by id
+//Fetch place by id
 router.get("/:id", async (req, res, next) => {
   try {
-    const foundUser = await User.findById(req.params.id);
-    res.status(200).json(foundUser);
+    const foundPlace = await Place.findById(req.params.id);
+    res.status(200).json(foundPlace);
   } catch (error) {
     res.sendStatus(404);
   }
 });
 
-//Update user
+//Update place
 router.post("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+    const updatedPlace = await Place.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    res.status(200).json(updatedUser);
+    res.status(200).json(updatedPlace);
   } catch (error) {
     res.sendStatus(400);
   }
 });
 
-//Delete user
+//Delete place
 router.delete("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
-    const deletedUser = await User.findByIdAndDelete(id);
-    res.status(200).json(deletedUser);
+    const deletedPlace = await Place.findByIdAndDelete(id);
+    res.status(200).json(deletedPlace);
   } catch (error) {
     res.sendStatus(404);
   }

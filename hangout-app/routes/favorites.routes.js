@@ -2,7 +2,7 @@ const Favorite = require("../models/Favorite.model");
 const router = require("express").Router();
 
 //Fetch all favorites by user id
-router.get("/favorites/:userId", async (req, res, next) => {
+router.get("/:userId", async (req, res, next) => {
   try {
     const id = req.params.userId;
     const foundFavorites = await Favorite.find({ userId: id });
@@ -13,7 +13,7 @@ router.get("/favorites/:userId", async (req, res, next) => {
 });
 
 //Fetch all favorites by place id
-router.get("favorites/:placeId", async (req, res, next) => {
+router.get("/:placeId", async (req, res, next) => {
   try {
     const id = req.params.placeId;
     const foundFavorites = await Favorite.find({ placeId: id });
@@ -22,7 +22,7 @@ router.get("favorites/:placeId", async (req, res, next) => {
 });
 
 //Create favorite
-router.post("/favorites", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     const createdFavorite = await Favorite.create(req.body);
     req.status(201).json(createdFavorite);
@@ -32,7 +32,7 @@ router.post("/favorites", async (req, res, next) => {
 });
 
 //Delete favorite
-router.delete("/favorites/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
     const deletedFavorite = await Favorite.findByIdAndDelete(id);
@@ -41,3 +41,5 @@ router.delete("/favorites/:id", async (req, res, next) => {
     res.sendStatus(404);
   }
 });
+
+module.exports = router;
