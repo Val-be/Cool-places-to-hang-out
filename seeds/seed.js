@@ -1,18 +1,31 @@
-const connect = require("../db/index");
-const Place = require("../models/Place.model");
-const mongoose = require("mongoose");
-const rawGreenSpaces = require("./ilots-de-fraicheur-espaces-verts-frais.json");
-const rawTerrasses = require("./terrasses-autorisations.json");
+const connect = require('../db/index');
+const Place = require('../models/Place.model');
+const mongoose = require('mongoose');
+const rawGreenSpaces = require('./ilots-de-fraicheur-espaces-verts-frais.json');
+const rawTerrasses = require('./terrasses-autorisations.json');
 
 //Convert terrasses to schema
 function convertRawTerrassesToSchema(terrasse) {
-  const name = terrasse.fields.nom_societe
-    .replace("SAL", "")
-    .replace("SARL", "")
-    .replace("SAS", "")
-    .trim();
-  const adress = terrasse.fields.adresse + " " + terrasse.fields.arrondissement;
-  const geolocation = terrasse.fields.geo_shape.coordinates;
+  // console.log(terrasse);
+  let name = null;
+  if (terrasse.fields.nom_enseigne) {
+    name = terrasse.fields.nom_enseigne
+      .replace('SAL', '')
+      .replace('SARL', '')
+      .replace('SAS', '')
+      .trim();
+  } else {
+    name = terrasse.fields.nom_societe
+      .replace('SAL', '')
+      .replace('SARL', '')
+      .replace('SAS', '')
+      .trim();
+  }
+  const adress = terrasse.fields.adresse + ' ' + terrasse.fields.arrondissement;
+  let geolocation = null;
+  if (terrasse.geometry) {
+    geolocation = terrasse.geometry.coordinates;
+  }
   const typology = terrasse.fields.typologie;
   return {
     name,
@@ -26,7 +39,7 @@ function convertRawTerrassesToSchema(terrasse) {
 function convertRawGreenSpacesToSchema(greenSpace) {
   const name = greenSpace.fields.nom;
   const adress =
-    greenSpace.fields.adresse + " " + greenSpace.fields.arrondissement;
+    greenSpace.fields.adresse + ' ' + greenSpace.fields.arrondissement;
   const geolocation = greenSpace.fields.geo_shape.coordinates;
   const typology = greenSpace.fields.categorie;
   return {
@@ -43,10 +56,13 @@ async function seedDB() {
 
   const formatedTerrasses = rawTerrasses
     .filter((obj) => {
-      return (
-        obj.fields.typologie !== "ETALAGE" &&
-        obj.fields.typologie !== "CONTRE ETALAGE"
-      );
+      if (
+        obj.fields.typologie !== 'ETALAGE' &&
+        obj.fields.typologie !== 'CONTRE ETALAGE'
+      ) {
+        return true;
+      }
+      return false;
     })
     .map(convertRawTerrassesToSchema);
 
@@ -60,7 +76,7 @@ async function seedDB() {
   );
 
   await mongoose.connection.close();
-  console.log("Connection closed.");
+  console.log('Connection closed.');
 }
 
 seedDB();
