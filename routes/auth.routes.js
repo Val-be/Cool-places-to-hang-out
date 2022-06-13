@@ -5,13 +5,6 @@ const User = require('../models/User.model');
 const router = require('express').Router();
 const saltRounds = 10;
 
-//Send signup form
-router.get('/signup', async (req, res, next) => {
-  const root = __dirname.replace('routes', '');
-  console.log(root);
-  res.sendFile('views/auth/signup.html', { root });
-});
-
 ///Creat User
 router.post('/signup', async (req, res, next) => {
   try {
