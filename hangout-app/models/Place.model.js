@@ -5,10 +5,10 @@ const placeSchema = new Schema(
   {
     name: {
       type: String,
-      // unique: true -> Ideally, should be unique, but its up to you
     },
-    location: String,
-    Type: String,
+    adress: String,
+    geolocation: Array,
+    typology: String,
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
