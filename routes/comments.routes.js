@@ -1,13 +1,13 @@
 const Comment = require('../models/Comment.model');
 const router = require('express').Router();
-const isLoggedIn = require('../middleware/isLoggedin');
+const isLoggedIn = require('../middleware/isLoggedIn');
 const isAdmin = require('../middleware/isAdmin');
 
 //Get all comments by user id
 router.get('/:userId', async (req, res, next) => {
   try {
     const id = req.params.userId;
-    const foundComments = await Comment.findById(id);
+    const foundComments = await Comment.findById(id).populate('user', 'place');
     res.status(200).json(foundComments);
   } catch (error) {
     res.status(404);
@@ -18,7 +18,7 @@ router.get('/:userId', async (req, res, next) => {
 router.get('/:placeId', async (req, res, next) => {
   try {
     const id = req.params.placeId;
-    const foundComments = await Comment.findById(id);
+    const foundComments = await Comment.findById(id).populate('user', 'place');
     res.status(200).json(foundComments);
   } catch (error) {
     res.status(404);
