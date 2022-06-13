@@ -1,4 +1,4 @@
-const { Schema, model, SchemaTypes } = require("mongoose");
+const { Schema, model, SchemaTypes } = require('mongoose');
 
 // TODO: Please make sure you edit the user model to whatever makes sense in this case
 const commentSchema = new Schema(
@@ -9,11 +9,11 @@ const commentSchema = new Schema(
     },
     user: {
       type: SchemaTypes.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     place: {
       type: SchemaTypes.ObjectId,
-      ref: "Place",
+      ref: 'Place',
     },
   },
   {
@@ -22,6 +22,6 @@ const commentSchema = new Schema(
   }
 );
 
-const Comment = model("Comment", commentSchema);
+const Comment = model('Comment', commentSchema);
 
 module.exports = Comment;

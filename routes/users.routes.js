@@ -1,4 +1,4 @@
-const isLoggedIn = require('../middleware/isLoggedin');
+const isLoggedIn = require('../middleware/isLoggedIn');
 const isAdmin = require('../middleware/isAdmin');
 const User = require('../models/User.model');
 const router = require('express').Router();
@@ -35,7 +35,7 @@ router.post('/:id', isLoggedIn, async (req, res, next) => {
       res.status(200).json(updatedUser);
     }
   } catch (error) {
-    res.sendStatus(400);
+    res.status(400).json({ message: 'Not authorized' });
   }
 });
 

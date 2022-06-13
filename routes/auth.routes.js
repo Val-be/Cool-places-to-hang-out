@@ -25,6 +25,8 @@ router.post('/signup', async (req, res, next) => {
     const createdUser = await User.create({
       username,
       password: hashedPassword,
+      email: req.body.email,
+      role: req.body.role,
     });
     res.status(201).json(createdUser);
   } catch (error) {
@@ -52,7 +54,7 @@ router.post('/login', async (req, res, next) => {
 
   const authToken = jsonwebtoken.sign(payload, process.env.TOKEN_SECRET, {
     algorithm: 'HS256',
-    expiresIn: '40s',
+    expiresIn: '10m',
   });
 
   res.status(200).json({ isLoggedIn: true, authToken });

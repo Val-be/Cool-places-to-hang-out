@@ -1,12 +1,12 @@
 const isAdmin = require('../middleware/isAdmin');
-const isLoggedIn = require('../middleware/isLoggedin');
+const isLoggedIn = require('../middleware/isLoggedIn');
 const Place = require('../models/Place.model');
 const router = require('express').Router();
 
 //Fetch all places
 router.get('/', async (req, res, next) => {
   try {
-    const foundPlaces = await Place.find();
+    const foundPlaces = await Place.find().populate('user');
     res.status(200).json(foundPlaces);
   } catch (error) {
     res.sendStatus(404);
@@ -16,7 +16,7 @@ router.get('/', async (req, res, next) => {
 //Fetch place by id
 router.get('/:id', async (req, res, next) => {
   try {
-    const foundPlace = await Place.findById(req.params.id);
+    const foundPlace = await Place.findById(req.params.id).populate('user');
     res.status(200).json(foundPlace);
   } catch (error) {
     res.sendStatus(404);
@@ -26,7 +26,8 @@ router.get('/:id', async (req, res, next) => {
 //Create place
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
-    const createdPlace = await Place.create(req.body);
+    const userId = req.user._id;
+    const createdPlace = await Place.create({ ...req.body, user: userId });
     res.status(201).json(createdPlace);
   } catch (error) {
     res.sendStatus(400);
