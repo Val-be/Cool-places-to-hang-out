@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, SchemaTypes } = require('mongoose');
 
 // TODO: Please make sure you edit the user model to whatever makes sense in this case
 const placeSchema = new Schema(
@@ -6,9 +6,13 @@ const placeSchema = new Schema(
     name: {
       type: String,
     },
-    adress: String,
+    address: String,
     geolocation: Array,
     typology: String,
+    user: {
+      type: SchemaTypes.ObjectId,
+      ref: 'User',
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
@@ -16,6 +20,6 @@ const placeSchema = new Schema(
   }
 );
 
-const Place = model("Place", placeSchema);
+const Place = model('Place', placeSchema);
 
 module.exports = Place;
