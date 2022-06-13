@@ -21,7 +21,8 @@ function convertRawTerrassesToSchema(terrasse) {
       .replace('SAS', '')
       .trim();
   }
-  const adress = terrasse.fields.adresse + ' ' + terrasse.fields.arrondissement;
+  const address =
+    terrasse.fields.adresse + ' ' + terrasse.fields.arrondissement;
   let geolocation = null;
   if (terrasse.geometry) {
     geolocation = terrasse.geometry.coordinates;
@@ -29,7 +30,7 @@ function convertRawTerrassesToSchema(terrasse) {
   const typology = terrasse.fields.typologie;
   return {
     name,
-    adress,
+    address,
     geolocation,
     typology,
   };
@@ -38,13 +39,13 @@ function convertRawTerrassesToSchema(terrasse) {
 //Converts green spaces to schema
 function convertRawGreenSpacesToSchema(greenSpace) {
   const name = greenSpace.fields.nom;
-  const adress =
+  const address =
     greenSpace.fields.adresse + ' ' + greenSpace.fields.arrondissement;
   const geolocation = greenSpace.fields.geo_shape.coordinates;
   const typology = greenSpace.fields.categorie;
   return {
     name,
-    adress,
+    address,
     geolocation,
     typology,
   };

@@ -1,8 +1,9 @@
-const Favorite = require("../models/Favorite.model");
-const router = require("express").Router();
+const Favorite = require('../models/Favorite.model');
+const router = require('express').Router();
+const isLoggedIn = require('../middleware/isLoggedin');
 
 //Fetch all favorites by user id
-router.get("/:userId", async (req, res, next) => {
+router.get('/:userId', async (req, res, next) => {
   try {
     const id = req.params.userId;
     const foundFavorites = await Favorite.find({ userId: id });
@@ -13,7 +14,7 @@ router.get("/:userId", async (req, res, next) => {
 });
 
 //Fetch all favorites by place id
-router.get("/:placeId", async (req, res, next) => {
+router.get('/:placeId', async (req, res, next) => {
   try {
     const id = req.params.placeId;
     const foundFavorites = await Favorite.find({ placeId: id });
@@ -22,7 +23,7 @@ router.get("/:placeId", async (req, res, next) => {
 });
 
 //Create favorite
-router.post("/", async (req, res, next) => {
+router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const createdFavorite = await Favorite.create(req.body);
     req.status(201).json(createdFavorite);
@@ -32,11 +33,14 @@ router.post("/", async (req, res, next) => {
 });
 
 //Delete favorite
-router.delete("/:id", async (req, res, next) => {
+router.delete('/:id', isLoggedIn, async (req, res, next) => {
   try {
     const id = req.params.id;
-    const deletedFavorite = await Favorite.findByIdAndDelete(id);
-    res.status(200).json(deletedFavorite);
+    const foundComment = await Comment.findById(id);
+    if (req.user._id.toString() === foundComment.user.toString() || isAdmin()) {
+      const deletedFavorite = await Favorite.findByIdAndDelete(id);
+      res.status(200).json(deletedFavorite);
+    }
   } catch (error) {
     res.sendStatus(404);
   }
