@@ -1,6 +1,7 @@
 const Favorite = require('../models/Favorite.model');
 const router = require('express').Router();
 const isLoggedIn = require('../middleware/isLoggedin');
+const isAdmin = require('../middleware/isAdmin');
 
 //Fetch all favorites by user id
 router.get('/:userId', async (req, res, next) => {

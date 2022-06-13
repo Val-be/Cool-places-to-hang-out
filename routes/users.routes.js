@@ -1,8 +1,10 @@
-const User = require("../models/User.model");
-const router = require("express").Router();
+const isLoggedIn = require('../middleware/isLoggedin');
+const isAdmin = require('../middleware/isAdmin');
+const User = require('../models/User.model');
+const router = require('express').Router();
 
 //Fetch all users
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const foundUsers = await User.find();
     res.status(200).json(foundUsers);
@@ -12,7 +14,7 @@ router.get("/", async (req, res, next) => {
 });
 
 //Fetch user by id
-router.get("/:id", async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const foundUser = await User.findById(req.params.id);
     res.status(200).json(foundUser);
@@ -22,24 +24,30 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //Update user
-router.post("/:id", async (req, res, next) => {
+router.post('/:id', isLoggedIn, async (req, res, next) => {
   try {
     const id = req.params.id;
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.status(200).json(updatedUser);
+    const foundUser = await User.findById(id);
+    if (foundUser._id.toString() === req.user._id.toString() || isAdmin) {
+      const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+      res.status(200).json(updatedUser);
+    }
   } catch (error) {
     res.sendStatus(400);
   }
 });
 
 //Delete user
-router.delete("/:id", async (req, res, next) => {
+router.delete('/:id', isLoggedIn, async (req, res, next) => {
   try {
     const id = req.params.id;
-    const deletedUser = await User.findByIdAndDelete(id);
-    res.status(200).json(deletedUser);
+    const foundUser = await User.findById(id);
+    if (foundUser._id.toString() === req.user._id.toString() || isAdmin) {
+      const deletedUser = await User.findByIdAndDelete(id);
+      res.status(200).json(deletedUser);
+    }
   } catch (error) {
     res.sendStatus(404);
   }
