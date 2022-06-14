@@ -4,10 +4,10 @@ const isLoggedIn = require('../middleware/isLoggedin');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 
 //Get all comments by user id
-router.get('/:userId', async (req, res, next) => {
+router.get('/findByUser/:userId', async (req, res, next) => {
   try {
-    const id = req.params.userId;
-    const foundComments = await Comment.findById(id);
+    const userId = req.params.userId;
+    const foundComments = await Comment.find({ user: userId });
     res.status(200).json(foundComments);
   } catch (error) {
     res.status(404);
@@ -15,10 +15,10 @@ router.get('/:userId', async (req, res, next) => {
 });
 
 //Get all comments by place id
-router.get('/:placeId', async (req, res, next) => {
+router.get('/findByPlace/:placeId', async (req, res, next) => {
   try {
-    const id = req.params.placeId;
-    const foundComments = await Comment.findById(id);
+    const placeId = req.params.placeId;
+    const foundComments = await Comment.find({ place: placeId });
     res.status(200).json(foundComments);
   } catch (error) {
     res.status(404);
@@ -28,7 +28,8 @@ router.get('/:placeId', async (req, res, next) => {
 //Create comment
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
-    const createdComment = await Comment.create(req.body);
+    const userId = req.user._id;
+    const createdComment = await Comment.create({ ...req.body, user: userId });
     res.status(200).json(createdComment);
   } catch (error) {
     res.sendStatus(400);

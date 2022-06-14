@@ -4,13 +4,10 @@ const isLoggedIn = require('../middleware/isLoggedIn');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 
 //Fetch all favorites by user id
-router.get('/:userId', async (req, res, next) => {
+router.get('/findByUser/:userId', async (req, res, next) => {
   try {
     const id = req.params.userId;
-    const foundFavorites = await Favorite.find({ userId: id }).populate(
-      'user',
-      'place'
-    );
+    const foundFavorites = await Favorite.find({ user: id });
     res.status(200).json(foundFavorites);
   } catch (error) {
     res.sendStatus(404);
@@ -18,13 +15,10 @@ router.get('/:userId', async (req, res, next) => {
 });
 
 //Fetch all favorites by place id
-router.get('/:placeId', async (req, res, next) => {
+router.get('/findByPlace/:placeId', async (req, res, next) => {
   try {
     const id = req.params.placeId;
-    const foundFavorites = await Favorite.find({ placeId: id }).populate(
-      'user',
-      'place'
-    );
+    const foundFavorites = await Favorite.find({ place: id });
     res.status(200).json(foundFavorites);
   } catch (error) {}
 });
