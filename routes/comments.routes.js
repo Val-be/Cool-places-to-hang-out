@@ -1,13 +1,13 @@
 const Comment = require('../models/Comment.model');
 const router = require('express').Router();
-const isLoggedIn = require('../middleware/isLoggedIn');
-const isAdmin = require('../middleware/isAdmin');
+const isLoggedIn = require('../middleware/isLoggedin');
+const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 
 //Get all comments by user id
 router.get('/:userId', async (req, res, next) => {
   try {
     const id = req.params.userId;
-    const foundComments = await Comment.findById(id).populate('user', 'place');
+    const foundComments = await Comment.findById(id);
     res.status(200).json(foundComments);
   } catch (error) {
     res.status(404);
@@ -18,7 +18,7 @@ router.get('/:userId', async (req, res, next) => {
 router.get('/:placeId', async (req, res, next) => {
   try {
     const id = req.params.placeId;
-    const foundComments = await Comment.findById(id).populate('user', 'place');
+    const foundComments = await Comment.findById(id);
     res.status(200).json(foundComments);
   } catch (error) {
     res.status(404);
@@ -36,33 +36,49 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 });
 
 //Update comment
-router.patch('/:id', isLoggedIn, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const foundComment = await Comment.findById(id);
-    if (req.user._id.toString() === foundComment.user.toString() || isAdmin()) {
+router.patch(
+  '/:id',
+  isLoggedIn,
+  isAdminOrPoster(Comment),
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      // const foundComment = await Comment.findById(id);
+      // if (
+      //   req.user._id.toString() === foundComment.user.toString() ||
+      //   isAdmin()
+      // ) {
+      // }
       const updatedComment = await Comment.findByIdAndUpdate(id, req.body, {
         new: true,
       });
       res.status(200).json(updatedComment);
+    } catch (error) {
+      res.sendStatus(404);
     }
-  } catch (error) {
-    res.sendStatus(404);
   }
-});
+);
 
 //Delete comment
-router.delete('/:id', isLoggedIn, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const foundComment = await Comment.findById(id);
-    if (req.user._id.toString() === foundComment.user.toString() || isAdmin()) {
+router.delete(
+  '/:id',
+  isLoggedIn,
+  isAdminOrPoster(Comment),
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      // const foundComment = await Comment.findById(id);
+      // if (
+      //   req.user._id.toString() === foundComment.user.toString() ||
+      //   isAdmin()
+      // ) {
+      // }
       const deletedComment = await Comment.findByIdAndDelete(id);
       res.status(200).json(deletedComment);
+    } catch (error) {
+      res.sendStatus(404);
     }
-  } catch (error) {
-    res.sendStatus(404);
   }
-});
+);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const isLoggedIn = require('../middleware/isLoggedIn');
-const isAdmin = require('../middleware/isAdmin');
+const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 const User = require('../models/User.model');
 const router = require('express').Router();
 
@@ -24,33 +24,37 @@ router.get('/:id', async (req, res, next) => {
 });
 
 //Update user
-router.post('/:id', isLoggedIn, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const foundUser = await User.findById(id);
-    if (foundUser._id.toString() === req.user._id.toString() || isAdmin) {
+router.post(
+  '/:id',
+  isLoggedIn,
+  isAdminOrPoster(User),
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
       const updatedUser = await User.findByIdAndUpdate(id, req.body, {
         new: true,
       });
       res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(400).json({ message: 'Not authorized' });
     }
-  } catch (error) {
-    res.status(400).json({ message: 'Not authorized' });
   }
-});
+);
 
 //Delete user
-router.delete('/:id', isLoggedIn, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const foundUser = await User.findById(id);
-    if (foundUser._id.toString() === req.user._id.toString() || isAdmin) {
+router.delete(
+  '/:id',
+  isLoggedIn,
+  isAdminOrPoster(User),
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
       const deletedUser = await User.findByIdAndDelete(id);
       res.status(200).json(deletedUser);
+    } catch (error) {
+      res.sendStatus(404);
     }
-  } catch (error) {
-    res.sendStatus(404);
   }
-});
+);
 
 module.exports = router;
