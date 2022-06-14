@@ -46,12 +46,6 @@ router.delete(
   async (req, res, next) => {
     try {
       const id = req.params.id;
-      // const foundComment = await Comment.findById(id);
-      // if (
-      //   req.user._id.toString() === foundComment.user.toString() ||
-      //   isAdmin()
-      // ) {
-      // }
       const deletedFavorite = await Favorite.findByIdAndDelete(id);
       res.status(200).json(deletedFavorite);
     } catch (error) {
