@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
     const foundUsers = await User.find();
     res.status(200).json(foundUsers);
   } catch (error) {
-    res.sendStatus(404);
+    next(error);
   }
 });
 
@@ -22,7 +22,7 @@ router.get('/:id', async (req, res, next) => {
     const foundUser = await User.findById(req.params.id);
     res.status(200).json(foundUser);
   } catch (error) {
-    res.sendStatus(404);
+    next(error);
   }
 });
 
@@ -44,7 +44,7 @@ router.patch(
       );
       res.status(200).json(updatedUser);
     } catch (error) {
-      res.status(404).json({ message: 'Not found' });
+      next(error);
     }
   }
 );
@@ -70,7 +70,7 @@ router.patch('/role/:id', isLoggedIn, isAdmin, async (req, res, next) => {
         .json({ message: "You can't change the role of an admin." });
     }
   } catch (error) {
-    res.status(404).json({ message: 'Not found' });
+    next(error);
   }
 });
 
@@ -102,8 +102,7 @@ router.patch(
         return;
       }
     } catch (error) {
-      console.error(error);
-      res.status(404).json({ message: 'Not found.' });
+      next(error);
     }
   }
 );
@@ -119,7 +118,7 @@ router.delete(
       const deletedUser = await User.findByIdAndDelete(id);
       res.status(200).json(deletedUser);
     } catch (error) {
-      res.sendStatus(404);
+      next(error);
     }
   }
 );

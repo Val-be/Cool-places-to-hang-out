@@ -9,7 +9,7 @@ router.get('/', async (req, res, next) => {
     const foundPlaces = await Place.find().populate('user');
     res.status(200).json(foundPlaces);
   } catch (error) {
-    res.sendStatus(404);
+    next(error);
   }
 });
 
@@ -19,7 +19,7 @@ router.get('/:id', async (req, res, next) => {
     const foundPlace = await Place.findById(req.params.id).populate('user');
     res.status(200).json(foundPlace);
   } catch (error) {
-    res.sendStatus(404);
+    next(error);
   }
 });
 
@@ -30,7 +30,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     const createdPlace = await Place.create({ ...req.body, user: userId });
     res.status(201).json(createdPlace);
   } catch (error) {
-    res.sendStatus(400);
+    next(error);
   }
 });
 
@@ -47,7 +47,7 @@ router.patch(
       });
       res.status(200).json(updatedPlace);
     } catch (error) {
-      res.sendStatus(400);
+      next(error);
     }
   }
 );
@@ -63,7 +63,7 @@ router.delete(
       const deletedPlace = await Place.findByIdAndDelete(id);
       res.status(200).json(deletedPlace);
     } catch (error) {
-      res.sendStatus(404);
+      next(error);
     }
   }
 );
