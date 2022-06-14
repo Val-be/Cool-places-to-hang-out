@@ -26,9 +26,14 @@ router.get('/findByPlace/:placeId', async (req, res, next) => {
 //Create favorite
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
-    const createdFavorite = await Favorite.create(req.body);
-    req.status(201).json(createdFavorite);
+    const userId = req.user._id;
+    const createdFavorite = await Favorite.create({
+      ...req.body,
+      user: userId,
+    });
+    res.status(201).json(createdFavorite);
   } catch (error) {
+    console.error(error);
     res.sendStatus(400);
   }
 });
