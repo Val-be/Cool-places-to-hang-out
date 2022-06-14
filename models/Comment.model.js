@@ -5,15 +5,17 @@ const commentSchema = new Schema(
   {
     text: {
       type: String,
-      // unique: true -> Ideally, should be unique, but its up to you
+      required: true,
     },
     user: {
       type: SchemaTypes.ObjectId,
       ref: 'User',
+      required: true,
     },
     place: {
       type: SchemaTypes.ObjectId,
       ref: 'Place',
+      required: true,
     },
   },
   {

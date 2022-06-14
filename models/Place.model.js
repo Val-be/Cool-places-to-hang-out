@@ -4,14 +4,15 @@ const { Schema, model, SchemaTypes } = require('mongoose');
 const placeSchema = new Schema(
   {
     name: {
-      type: String,
+      type: { type: String, required: true, unique: true },
     },
     address: String,
-    geolocation: Array,
+    geolocation: { type: Array, required: true },
     typology: String,
     user: {
       type: SchemaTypes.ObjectId,
       ref: 'User',
+      required: true,
     },
   },
   {
