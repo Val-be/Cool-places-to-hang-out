@@ -5,10 +5,10 @@ const User = require('../models/User.model');
 const router = require('express').Router();
 const saltRounds = 10;
 
-///Creat User
+///Create User
 router.post('/signup', async (req, res, next) => {
   try {
-    const { username, password, email, role } = req.body;
+    const { username, password, email } = req.body;
 
     if (!username || typeof username !== 'string') {
       res.status(400).json({ message: 'Please enter a valid username.' });
@@ -25,7 +25,7 @@ router.post('/signup', async (req, res, next) => {
 
     if (!password || typeof password !== 'string' || password.length < 8) {
       res.status(400).json({
-        message: 'Please enter a valid password of at least 8 charcaters.',
+        message: 'Please enter a valid password of at least 8 characters.',
       });
       return;
     }
@@ -43,7 +43,6 @@ router.post('/signup', async (req, res, next) => {
       username,
       password: hashedPassword,
       email,
-      role,
     });
     res.status(201).json(createdUser);
   } catch (error) {
