@@ -10,7 +10,7 @@ router.get('/findByUser/:userId', async (req, res, next) => {
     const foundFavorites = await Favorite.find({ user: id });
     res.status(200).json(foundFavorites);
   } catch (error) {
-    res.sendStatus(404);
+    next(error);
   }
 });
 
@@ -20,7 +20,9 @@ router.get('/findByPlace/:placeId', async (req, res, next) => {
     const id = req.params.placeId;
     const foundFavorites = await Favorite.find({ place: id });
     res.status(200).json(foundFavorites);
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
 
 //Create favorite
@@ -33,8 +35,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     });
     res.status(201).json(createdFavorite);
   } catch (error) {
-    console.error(error);
-    res.sendStatus(400);
+    next(error);
   }
 });
 
@@ -49,7 +50,7 @@ router.delete(
       const deletedFavorite = await Favorite.findByIdAndDelete(id);
       res.status(200).json(deletedFavorite);
     } catch (error) {
-      res.sendStatus(404);
+      next(error);
     }
   }
 );

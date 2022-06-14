@@ -9,6 +9,7 @@ const saltRounds = 10;
 router.post('/signup', async (req, res, next) => {
   try {
     const { username, password, email } = req.body;
+    const badRequests = [];
 
     if (!username || typeof username !== 'string') {
       res.status(400).json({ message: 'Please enter a valid username.' });
@@ -46,7 +47,6 @@ router.post('/signup', async (req, res, next) => {
     });
     res.status(201).json(createdUser);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 });
@@ -89,8 +89,7 @@ router.get('/verify', async (req, res, next) => {
 
     res.json({ token, payload });
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ message: 'Invalid token' });
+    next(error);
   }
 });
 

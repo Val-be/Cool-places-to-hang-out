@@ -10,7 +10,7 @@ router.get('/findByUser/:userId', async (req, res, next) => {
     const foundComments = await Comment.find({ user: userId });
     res.status(200).json(foundComments);
   } catch (error) {
-    res.status(404).json({ message: 'No comments found for this user id.' });
+    next(error);
   }
 });
 
@@ -21,7 +21,7 @@ router.get('/findByPlace/:placeId', async (req, res, next) => {
     const foundComments = await Comment.find({ place: placeId });
     res.status(200).json(foundComments);
   } catch (error) {
-    res.status(404).json({ message: 'No comments found for this place id.' });
+    next(error);
   }
 });
 
@@ -42,7 +42,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     const createdComment = await Comment.create({ ...req.body, user: userId });
     res.status(200).json(createdComment);
   } catch (error) {
-    res.sendStatus(400);
+    next(error);
   }
 });
 
@@ -64,7 +64,7 @@ router.patch(
       );
       res.status(200).json(updatedComment);
     } catch (error) {
-      res.sendStatus(404);
+      next(error);
     }
   }
 );
@@ -80,7 +80,7 @@ router.delete(
       const deletedComment = await Comment.findByIdAndDelete(id);
       res.status(200).json(deletedComment);
     } catch (error) {
-      res.sendStatus(404);
+      next(error);
     }
   }
 );
