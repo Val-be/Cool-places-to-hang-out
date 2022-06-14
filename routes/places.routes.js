@@ -42,9 +42,6 @@ router.patch(
   async (req, res, next) => {
     try {
       const id = req.params.id;
-      // const foundPlace = await Place.findById(id);
-      // if (foundPlace.user.toString() === req.user._id.toString() || isAdmin) {
-      // }
       const updatedPlace = await Place.findByIdAndUpdate(id, req.body, {
         new: true,
       });
@@ -63,9 +60,6 @@ router.delete(
   async (req, res, next) => {
     try {
       const id = req.params.id;
-      // const foundPlace = await Place.findById(id);
-      // if (foundPlace.user.toString() === req.user._id.toString() || isAdmin) {
-      // }
       const deletedPlace = await Place.findByIdAndDelete(id);
       res.status(200).json(deletedPlace);
     } catch (error) {

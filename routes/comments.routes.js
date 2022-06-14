@@ -54,12 +54,6 @@ router.patch(
   async (req, res, next) => {
     try {
       const id = req.params.id;
-      // const foundComment = await Comment.findById(id);
-      // if (
-      //   req.user._id.toString() === foundComment.user.toString() ||
-      //   isAdmin()
-      // ) {
-      // }
       const { text } = req.body;
       const updatedComment = await Comment.findByIdAndUpdate(
         id,
@@ -83,12 +77,6 @@ router.delete(
   async (req, res, next) => {
     try {
       const id = req.params.id;
-      // const foundComment = await Comment.findById(id);
-      // if (
-      //   req.user._id.toString() === foundComment.user.toString() ||
-      //   isAdmin()
-      // ) {
-      // }
       const deletedComment = await Comment.findByIdAndDelete(id);
       res.status(200).json(deletedComment);
     } catch (error) {
