@@ -1,7 +1,7 @@
 const Favorite = require('../models/Favorite.model');
 const router = require('express').Router();
 const isLoggedIn = require('../middleware/isLoggedIn');
-const isAdmin = require('../middleware/isAdmin');
+const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 
 //Fetch all favorites by user id
 router.get('/:userId', async (req, res, next) => {
@@ -40,17 +40,25 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 });
 
 //Delete favorite
-router.delete('/:id', isLoggedIn, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const foundComment = await Comment.findById(id);
-    if (req.user._id.toString() === foundComment.user.toString() || isAdmin()) {
+router.delete(
+  '/:id',
+  isLoggedIn,
+  isAdminOrPoster(Favorite),
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      // const foundComment = await Comment.findById(id);
+      // if (
+      //   req.user._id.toString() === foundComment.user.toString() ||
+      //   isAdmin()
+      // ) {
+      // }
       const deletedFavorite = await Favorite.findByIdAndDelete(id);
       res.status(200).json(deletedFavorite);
+    } catch (error) {
+      res.sendStatus(404);
     }
-  } catch (error) {
-    res.sendStatus(404);
   }
-});
+);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const isAdmin = require('../middleware/isAdmin');
+const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const Place = require('../models/Place.model');
 const router = require('express').Router();
@@ -35,33 +35,43 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 });
 
 //Update place
-router.patch('/:id', isLoggedIn, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const foundPlace = await Place.findById(id);
-    if (foundPlace.user.toString() === req.user._id.toString() || isAdmin) {
+router.patch(
+  '/:id',
+  isLoggedIn,
+  isAdminOrPoster(Place),
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      // const foundPlace = await Place.findById(id);
+      // if (foundPlace.user.toString() === req.user._id.toString() || isAdmin) {
+      // }
       const updatedPlace = await Place.findByIdAndUpdate(id, req.body, {
         new: true,
       });
       res.status(200).json(updatedPlace);
+    } catch (error) {
+      res.sendStatus(400);
     }
-  } catch (error) {
-    res.sendStatus(400);
   }
-});
+);
 
 //Delete place
-router.delete('/:id', isLoggedIn, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const foundPlace = await Place.findById(id);
-    if (foundPlace.user.toString() === req.user._id.toString() || isAdmin) {
+router.delete(
+  '/:id',
+  isLoggedIn,
+  isAdminOrPoster(Place),
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      // const foundPlace = await Place.findById(id);
+      // if (foundPlace.user.toString() === req.user._id.toString() || isAdmin) {
+      // }
       const deletedPlace = await Place.findByIdAndDelete(id);
       res.status(200).json(deletedPlace);
+    } catch (error) {
+      res.sendStatus(404);
     }
-  } catch (error) {
-    res.sendStatus(404);
   }
-});
+);
 
 module.exports = router;
