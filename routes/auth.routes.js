@@ -25,13 +25,13 @@ router.post('/signup', async (req, res, next) => {
 
     if (!password || typeof password !== 'string' || password.length < 8) {
       res.status(400).json({
-        message: 'Please enter a valid password of at least 8 charcaters',
+        message: 'Please enter a valid password of at least 8 charcaters.',
       });
       return;
     }
 
     if (!email || typeof email !== 'string') {
-      res.status(400).json('Please enter a valid email');
+      res.status(400).json('Please enter a valid email.');
       return;
     }
 

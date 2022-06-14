@@ -10,7 +10,7 @@ router.get('/findByUser/:userId', async (req, res, next) => {
     const foundComments = await Comment.find({ user: userId });
     res.status(200).json(foundComments);
   } catch (error) {
-    res.status(404);
+    res.status(404).json({ message: 'No comments found for this user id.' });
   }
 });
 
@@ -21,7 +21,7 @@ router.get('/findByPlace/:placeId', async (req, res, next) => {
     const foundComments = await Comment.find({ place: placeId });
     res.status(200).json(foundComments);
   } catch (error) {
-    res.status(404);
+    res.status(404).json({ message: 'No comments found for this place id.' });
   }
 });
 
@@ -29,6 +29,16 @@ router.get('/findByPlace/:placeId', async (req, res, next) => {
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const userId = req.user._id;
+    const { text, place } = req.body;
+
+    if (!text || typeof text !== 'string') {
+      res.status(400).json({ message: 'Please enter a text to comment.' });
+      return;
+    }
+
+    if (!place || typeof place.toString() !== 'string') {
+      res.status(400).json({ message: 'Please give a valid place.' });
+    }
     const createdComment = await Comment.create({ ...req.body, user: userId });
     res.status(200).json(createdComment);
   } catch (error) {
@@ -50,9 +60,14 @@ router.patch(
       //   isAdmin()
       // ) {
       // }
-      const updatedComment = await Comment.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
+      const { text } = req.body;
+      const updatedComment = await Comment.findByIdAndUpdate(
+        id,
+        { text },
+        {
+          new: true,
+        }
+      );
       res.status(200).json(updatedComment);
     } catch (error) {
       res.sendStatus(404);
