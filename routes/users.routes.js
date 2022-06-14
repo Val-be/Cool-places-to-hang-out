@@ -1,5 +1,6 @@
 const isLoggedIn = require('../middleware/isLoggedIn');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
+const isAdmin = require('../middleware/isAdmin');
 const User = require('../models/User.model');
 const router = require('express').Router();
 
@@ -24,22 +25,45 @@ router.get('/:id', async (req, res, next) => {
 });
 
 //Update user
-router.post(
+router.patch(
   '/:id',
   isLoggedIn,
   isAdminOrPoster(User),
   async (req, res, next) => {
     try {
       const id = req.params.id;
-      const updatedUser = await User.findByIdAndUpdate(id, req.body, {
-        new: true,
-      });
+      const { username, email } = req.body;
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { username, email },
+        {
+          new: true,
+        }
+      );
       res.status(200).json(updatedUser);
     } catch (error) {
       res.status(400).json({ message: 'Not authorized' });
     }
   }
 );
+
+//Change role of user
+router.patch('/role/:id', isLoggedIn, isAdmin, async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const { role } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { role },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ message: 'Not authorized' });
+  }
+});
 
 //Delete user
 router.delete(

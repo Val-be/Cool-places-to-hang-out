@@ -5,16 +5,33 @@ const User = require('../models/User.model');
 const router = require('express').Router();
 const saltRounds = 10;
 
-///Creat User
+///Create User
 router.post('/signup', async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
+
+    if (!username || typeof username !== 'string') {
+      res.status(400).json({ message: 'Please enter a valid username.' });
+      return;
+    }
 
     const foundUser = await User.findOne({ username });
     if (foundUser) {
       res
         .status(401)
         .json({ message: 'Username already exists. Try logging in instead.' });
+      return;
+    }
+
+    if (!password || typeof password !== 'string' || password.length < 8) {
+      res.status(400).json({
+        message: 'Please enter a valid password of at least 8 characters.',
+      });
+      return;
+    }
+
+    if (!email || typeof email !== 'string') {
+      res.status(400).json('Please enter a valid email.');
       return;
     }
 
@@ -25,8 +42,7 @@ router.post('/signup', async (req, res, next) => {
     const createdUser = await User.create({
       username,
       password: hashedPassword,
-      email: req.body.email,
-      role: req.body.role,
+      email,
     });
     res.status(201).json(createdUser);
   } catch (error) {
