@@ -29,6 +29,7 @@ function convertRawTerrassesToSchema(terrasse) {
     geometry = terrasse.geometry;
   }
   const typology = terrasse.fields.typologie;
+  console.log(name);
   return {
     name,
     address,
