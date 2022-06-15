@@ -6,13 +6,14 @@ const rawTerrasses = require('./terrasses-autorisations.json');
 
 //Convert terrasses to schema
 function convertRawTerrassesToSchema(terrasse) {
-  // console.log(terrasse);
   let name = null;
   if (terrasse.fields.nom_enseigne) {
     name = terrasse.fields.nom_enseigne
       .replace('SAL', '')
       .replace('SARL', '')
       .replace('SAS', '')
+      .replace('SNC', '')
+      .replace('SOC', '')
       .trim();
   } else {
     name = terrasse.fields.nom_societe
@@ -23,15 +24,15 @@ function convertRawTerrassesToSchema(terrasse) {
   }
   const address =
     terrasse.fields.adresse + ' ' + terrasse.fields.arrondissement;
-  let geolocation = null;
+  let geometry = { type: 'Point', coordinates: [0, 0] };
   if (terrasse.geometry) {
-    geolocation = terrasse.geometry.coordinates;
+    geometry = terrasse.geometry;
   }
   const typology = terrasse.fields.typologie;
   return {
     name,
     address,
-    geolocation,
+    geometry,
     typology,
   };
 }
@@ -41,12 +42,12 @@ function convertRawGreenSpacesToSchema(greenSpace) {
   const name = greenSpace.fields.nom;
   const address =
     greenSpace.fields.adresse + ' ' + greenSpace.fields.arrondissement;
-  const geolocation = greenSpace.fields.geo_shape.coordinates;
+  const { geo_shape } = greenSpace.fields;
   const typology = greenSpace.fields.categorie;
   return {
     name,
     address,
-    geolocation,
+    geometry: geo_shape,
     typology,
   };
 }
