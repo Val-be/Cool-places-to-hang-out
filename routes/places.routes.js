@@ -1,6 +1,6 @@
 const { request } = require('express');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
-const isLoggedIn = require('../middleware/isLoggedIn');
+const isLoggedIn = require('../middleware/isLoggedin');
 const Place = require('../models/Place.model');
 const router = require('express').Router();
 const { default: axios } = require('axios');
