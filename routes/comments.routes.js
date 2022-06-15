@@ -9,6 +9,7 @@ router.get('/findByUser/:userId', async (req, res, next) => {
     const userId = req.params.userId;
     const foundComments = await Comment.find({ user: userId });
     res.status(200).json(foundComments);
+    res.json(res.paginatedResults);
   } catch (error) {
     next(error);
   }
