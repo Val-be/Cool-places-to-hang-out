@@ -1,6 +1,6 @@
 const Comment = require('../models/Comment.model');
 const router = require('express').Router();
-const isLoggedIn = require('../middleware/isLoggedin');
+const isLoggedIn = require('../middleware/isLoggedIn');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 
 //Get all comments by user id
