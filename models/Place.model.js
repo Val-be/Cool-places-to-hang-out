@@ -4,10 +4,15 @@ const { Schema, model, SchemaTypes } = require('mongoose');
 const placeSchema = new Schema(
   {
     name: {
-      type: { type: String, required: true, unique: true },
+      type: String,
+      required: true,
+      unique: true,
     },
     address: String,
-    geolocation: { type: Array, required: true },
+    geometry: {
+      type: Object,
+      default: { type: 'Point', coordinates: [0, 0] },
+    },
     typology: String,
     user: {
       type: SchemaTypes.ObjectId,
@@ -19,6 +24,8 @@ const placeSchema = new Schema(
     timestamps: true,
   }
 );
+
+placeSchema.index({ geometry: '2dsphere' });
 
 const Place = model('Place', placeSchema);
 
