@@ -1,13 +1,48 @@
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const Place = require('../models/Place.model');
+const { paginatedQuery } = require('./helpers/pagination');
 const router = require('express').Router();
 
 //Fetch all places
 router.get('/', async (req, res, next) => {
   try {
-    const foundPlaces = await Place.find().populate('user');
-    res.status(200).json(foundPlaces);
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const filter = {};
+
+    const totalDocumentCount = await Place.countDocuments(filter);
+
+    const next =
+      endIndex < totalDocumentCount
+        ? {
+            page: page + 1,
+            limit: limit,
+          }
+        : null;
+
+    const previous =
+      startIndex > 0
+        ? {
+            page: page - 1,
+            limit: limit,
+          }
+        : null;
+
+    const results = await Place.find(filter)
+      .limit(limit)
+      .skip(startIndex)
+      .populate('user');
+
+    res.status(200).json({
+      results,
+      next,
+      previous,
+      totalDocumentCount,
+    });
   } catch (error) {
     next(error);
   }
