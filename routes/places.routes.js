@@ -1,7 +1,6 @@
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const Place = require('../models/Place.model');
-const { paginatedQuery } = require('./helpers/pagination');
 const router = require('express').Router();
 
 //Fetch all places
@@ -49,10 +48,48 @@ router.get('/', async (req, res, next) => {
 });
 
 //Fetch place by id
-router.get('/:id', async (req, res, next) => {
+router.get('/fetchId/:id', async (req, res, next) => {
   try {
     const foundPlace = await Place.findById(req.params.id).populate('user');
     res.status(200).json(foundPlace);
+  } catch (error) {
+    next(error);
+  }
+});
+
+//Fetch near places
+router.get('/near', async (req, res, next) => {
+  try {
+    const longitude = parseFloat(req.query.longitude);
+    const latitude = parseFloat(req.query.latitude);
+    const coordinates = [longitude, latitude];
+    const maxDistance = parseInt(req.query.maxDistance);
+    console.log(coordinates, maxDistance);
+    let errorMessage = '';
+    if (
+      !longitude ||
+      typeof longitude !== 'number' ||
+      !latitude ||
+      typeof latitude !== 'number'
+    ) {
+      errorMessage +=
+        'Please enter valid coordinates, i.e a longitude followed and a latitude. ';
+    }
+    if (!maxDistance || typeof maxDistance !== 'number') {
+      errorMessage += 'Please enter a valid distance in meters.';
+    }
+    if (errorMessage.length !== 0) {
+      res.status(400).json({ message: errorMessage.trim() });
+    }
+    const nearPlaces = await Place.find({
+      geometry: {
+        $nearSphere: {
+          $geometry: { type: 'Point', coordinates },
+          $maxDistance: maxDistance,
+        },
+      },
+    });
+    res.status(200).json(nearPlaces);
   } catch (error) {
     next(error);
   }
