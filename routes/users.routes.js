@@ -1,4 +1,4 @@
-const isLoggedIn = require('../middleware/isLoggedIn');
+const isLoggedIn = require('../middleware/isloggedin');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 const isAdmin = require('../middleware/isAdmin');
 const bcrypt = require('bcryptjs');

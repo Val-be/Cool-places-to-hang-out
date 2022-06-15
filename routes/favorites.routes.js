@@ -1,6 +1,6 @@
 const Favorite = require('../models/Favorite.model');
 const router = require('express').Router();
-const isLoggedIn = require('../middleware/isLoggedIn');
+const isLoggedIn = require('../middleware/isloggedin');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 
 //Fetch all favorites by user id
