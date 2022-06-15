@@ -1,14 +1,21 @@
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const Place = require('../models/Place.model');
-const { paginatedQuery } = require('./helpers/pagination');
+//const { paginatedQuery } = require('./helpers/pagination');
 const router = require('express').Router();
 
 //Fetch all places
 router.get('/', async (req, res, next) => {
   try {
     const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
+    //const limit = parseInt(req.query.limit);
+    let limit = req.query.limit;
+    if (limit > 50) {
+      limit = 50;
+    } else {
+      return;
+    }
+
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
