@@ -4,22 +4,87 @@ const isLoggedIn = require('../middleware/isLoggedIn');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 
 //Fetch all favorites by user id
-router.get('/findByUser/:userId', async (req, res, next) => {
+router.get('/:id/user', async (req, res, next) => {
   try {
     const id = req.params.userId;
-    const foundFavorites = await Favorite.find({ user: id });
-    res.status(200).json(foundFavorites);
+    const page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
+    if (limit > 50) {
+      limit = 50;
+    }
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const filter = {};
+
+    const totalDocumentCount = await Favorite.countDocuments(filter);
+
+    const next =
+      endIndex < totalDocumentCount
+        ? {
+            page: page + 1,
+            limit: limit,
+          }
+        : null;
+
+    const previous =
+      startIndex > 0
+        ? {
+            page: page - 1,
+            limit: limit,
+          }
+        : null;
+    const foundFavorites = await Favorite.find({ user: id })
+      .limit(limit)
+      .skip(startIndex)
+      .populate('user');
+    res
+      .status(200)
+      .json({ foundFavorites, next, previous, totalDocumentCount });
   } catch (error) {
     next(error);
   }
 });
 
 //Fetch all favorites by place id
-router.get('/findByPlace/:placeId', async (req, res, next) => {
+router.get('/:id/place', async (req, res, next) => {
   try {
     const id = req.params.placeId;
-    const foundFavorites = await Favorite.find({ place: id });
-    res.status(200).json(foundFavorites);
+    const page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
+    if (limit > 50) {
+      limit = 50;
+    }
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const filter = {};
+
+    const totalDocumentCount = await Favorite.countDocuments(filter);
+
+    const next =
+      endIndex < totalDocumentCount
+        ? {
+            page: page + 1,
+            limit: limit,
+          }
+        : null;
+
+    const previous =
+      startIndex > 0
+        ? {
+            page: page - 1,
+            limit: limit,
+          }
+        : null;
+
+    const foundFavorites = await Favorite.find({ place: id })
+      .limit(limit)
+      .skip(startIndex)
+      .populate('user');
+    res
+      .status(200)
+      .json({ foundFavorites, next, previous, totalDocumentCount });
   } catch (error) {
     next(error);
   }

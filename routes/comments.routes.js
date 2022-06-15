@@ -4,23 +4,83 @@ const isLoggedIn = require('../middleware/isLoggedin');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 
 //Get all comments by user id
-router.get('/findByUser/:userId', async (req, res, next) => {
+router.get('/:id/user', async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const foundComments = await Comment.find({ user: userId });
-    res.status(200).json(foundComments);
-    res.json(res.paginatedResults);
+    const page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
+    if (limit > 50) {
+      limit = 50;
+    }
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const filter = {};
+
+    const totalDocumentCount = await Comment.countDocuments(filter);
+
+    const next =
+      endIndex < totalDocumentCount
+        ? {
+            page: page + 1,
+            limit: limit,
+          }
+        : null;
+
+    const previous =
+      startIndex > 0
+        ? {
+            page: page - 1,
+            limit: limit,
+          }
+        : null;
+    const foundComments = await Comment.find({ user: userId })
+      .limit(limit)
+      .skip(startIndex)
+      .populate('user');
+    res.status(200).json({ foundComments, next, previous, totalDocumentCount });
   } catch (error) {
     next(error);
   }
 });
 
 //Get all comments by place id
-router.get('/findByPlace/:placeId', async (req, res, next) => {
+router.get('/:id/Place', async (req, res, next) => {
   try {
     const placeId = req.params.placeId;
-    const foundComments = await Comment.find({ place: placeId });
-    res.status(200).json(foundComments);
+    const page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
+    if (limit > 50) {
+      limit = 50;
+    }
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const filter = {};
+
+    const totalDocumentCount = await Comment.countDocuments(filter);
+
+    const next =
+      endIndex < totalDocumentCount
+        ? {
+            page: page + 1,
+            limit: limit,
+          }
+        : null;
+
+    const previous =
+      startIndex > 0
+        ? {
+            page: page - 1,
+            limit: limit,
+          }
+        : null;
+
+    const foundComments = await Comment.find({ place: placeId })
+      .limit(limit)
+      .skip(startIndex)
+      .populate('user');
+    res.status(200).json({ foundComments, next, previous, totalDocumentCount });
   } catch (error) {
     next(error);
   }

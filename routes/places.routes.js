@@ -9,12 +9,9 @@ const { default: axios } = require('axios');
 router.get('/', async (req, res, next) => {
   try {
     const page = parseInt(req.query.page);
-    //const limit = parseInt(req.query.limit);
-    let limit = req.query.limit;
+    let limit = parseInt(req.query.limit);
     if (limit > 50) {
       limit = 50;
-    } else {
-      return;
     }
 
     const startIndex = (page - 1) * limit;
