@@ -42,12 +42,12 @@ function convertRawGreenSpacesToSchema(greenSpace) {
   const name = greenSpace.fields.nom;
   const address =
     greenSpace.fields.adresse + ' ' + greenSpace.fields.arrondissement;
-  const { geometry } = greenSpace;
+  const { geo_shape } = greenSpace.fields;
   const typology = greenSpace.fields.categorie;
   return {
     name,
     address,
-    geometry,
+    geometry: geo_shape,
     typology,
   };
 }
