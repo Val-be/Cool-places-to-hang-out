@@ -12,7 +12,6 @@ const placeSchema = new Schema(
     user: {
       type: SchemaTypes.ObjectId,
       ref: 'User',
-      required: true,
     },
   },
   {
