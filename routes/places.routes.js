@@ -1,17 +1,19 @@
+const { request } = require('express');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 const isLoggedIn = require('../middleware/isLoggedIn');
 const Place = require('../models/Place.model');
 const router = require('express').Router();
+const { default: axios } = require('axios');
 
 //Fetch all places
 router.get('/', async (req, res, next) => {
   try {
     const page = parseInt(req.query.page);
-
     let limit = parseInt(req.query.limit);
     if (limit > 50) {
       limit = 50;
     }
+
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
@@ -103,7 +105,20 @@ router.get('/near', async (req, res, next) => {
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const createdPlace = await Place.create({ ...req.body, user: userId });
+    const { address } = req.body;
+    console.log(address);
+    const geocode = await axios.get(
+      `https://geocode.maps.co/search?q={${address}}`
+    );
+    console.log(geocode);
+    const longitude = parseFloat(geocode.data[0].lon);
+    const latitude = parseFloat(geocode.data[0].lat);
+    const geometry = { type: 'Point', coordinates: [longitude, latitude] };
+    const createdPlace = await Place.create({
+      ...req.body,
+      user: userId,
+      geometry,
+    });
     res.status(201).json(createdPlace);
   } catch (error) {
     next(error);
