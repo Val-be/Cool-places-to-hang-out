@@ -13,8 +13,6 @@ router.post('/signup', async (req, res, next) => {
 
     if (!username || typeof username !== 'string') {
       badRequests.push('username');
-      // res.status(400).json({ message: 'Please enter a valid username.' });
-      // return;
     }
 
     const foundUser = await User.findOne({ username });
@@ -27,20 +25,14 @@ router.post('/signup', async (req, res, next) => {
 
     if (!password || typeof password !== 'string' || password.length < 8) {
       badRequests.push('password');
-      // res.status(400).json({
-      //   message: 'Please enter a valid password of at least 8 characters.',
-      // });
-      return;
     }
 
     if (!email || typeof email !== 'string') {
       badRequests.push('email');
-      // res.status(400).json('Please enter a valid email.');
-      // return;
     }
 
     if (badRequests.length !== 0) {
-      const message = '';
+      let message = '';
       badRequests.forEach((word) => {
         message += `Please enter a valid ${word}. `;
       });
