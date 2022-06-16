@@ -94,6 +94,15 @@ router.get('/:id/place', async (req, res, next) => {
 router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const userId = req.user._id;
+    const foundFavorite = await Favorite.find({
+      $and: [{ user: userId }, { place: req.body.place }],
+    });
+    if (foundFavorite.length !== 0) {
+      res
+        .status(409)
+        .json({ message: 'You already have this place as a favorite.' });
+      return;
+    }
     const createdFavorite = await Favorite.create({
       ...req.body,
       user: userId,
