@@ -6,7 +6,6 @@ const placeSchema = new Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
     },
     address: String,
     geometry: {

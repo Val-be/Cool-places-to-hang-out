@@ -55,28 +55,33 @@ function convertRawGreenSpacesToSchema(greenSpace) {
 
 //Seeds the DB
 async function seedDB() {
-  await connect();
+  // await connect();
+  await Place.deleteMany();
+  try {
+    const formatedTerrasses = rawTerrasses
+      .filter((obj) => {
+        if (
+          obj.fields.typologie !== 'ETALAGE' &&
+          obj.fields.typologie !== 'CONTRE ETALAGE'
+        ) {
+          return true;
+        }
+        return false;
+      })
+      .map(convertRawTerrassesToSchema);
 
-  const formatedTerrasses = rawTerrasses
-    .filter((obj) => {
-      if (
-        obj.fields.typologie !== 'ETALAGE' &&
-        obj.fields.typologie !== 'CONTRE ETALAGE'
-      ) {
-        return true;
-      }
-      return false;
-    })
-    .map(convertRawTerrassesToSchema);
+    const foramtedGreenSpaces = rawGreenSpaces.map(
+      convertRawGreenSpacesToSchema
+    );
+    const createdTerrasses = await Place.create(formatedTerrasses);
+    const createdGreenSpaces = await Place.create(foramtedGreenSpaces);
 
-  const foramtedGreenSpaces = rawGreenSpaces.map(convertRawGreenSpacesToSchema);
-
-  const createdTerrasses = await Place.create(formatedTerrasses);
-  const createdGreenSpaces = await Place.create(foramtedGreenSpaces);
-
-  console.log(
-    `Created ${createdTerrasses.length} terrasses and ${createdGreenSpaces.length} green spaces`
-  );
+    console.log(
+      `Created ${createdTerrasses.length} terrasses and ${createdGreenSpaces.length} green spaces`
+    );
+  } catch (error) {
+    console.error(error.message);
+  }
 
   await mongoose.connection.close();
   console.log('Connection closed.');
