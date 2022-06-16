@@ -6,7 +6,8 @@ const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 //Get all comments by user id
 router.get('/:id/user', async (req, res, next) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.params.id;
+    console.log(userId);
     const page = parseInt(req.query.page);
     let limit = parseInt(req.query.limit);
     if (limit > 50) {
@@ -38,6 +39,7 @@ router.get('/:id/user', async (req, res, next) => {
       .limit(limit)
       .skip(startIndex)
       .populate('user');
+    console.log(foundComments);
     res.status(200).json({ foundComments, next, previous, totalDocumentCount });
   } catch (error) {
     next(error);
@@ -45,9 +47,9 @@ router.get('/:id/user', async (req, res, next) => {
 });
 
 //Get all comments by place id
-router.get('/:id/Place', async (req, res, next) => {
+router.get('/:id/place', async (req, res, next) => {
   try {
-    const placeId = req.params.placeId;
+    const placeId = req.params.id;
     const page = parseInt(req.query.page);
     let limit = parseInt(req.query.limit);
     if (limit > 50) {

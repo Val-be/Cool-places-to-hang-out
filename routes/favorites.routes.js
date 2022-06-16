@@ -6,7 +6,7 @@ const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 //Fetch all favorites by user id
 router.get('/:id/user', async (req, res, next) => {
   try {
-    const id = req.params.userId;
+    const id = req.params.id;
     const page = parseInt(req.query.page);
     let limit = parseInt(req.query.limit);
     if (limit > 50) {
@@ -37,7 +37,7 @@ router.get('/:id/user', async (req, res, next) => {
     const foundFavorites = await Favorite.find({ user: id })
       .limit(limit)
       .skip(startIndex)
-      .populate('user');
+      .populate('User');
     res
       .status(200)
       .json({ foundFavorites, next, previous, totalDocumentCount });
@@ -49,7 +49,7 @@ router.get('/:id/user', async (req, res, next) => {
 //Fetch all favorites by place id
 router.get('/:id/place', async (req, res, next) => {
   try {
-    const id = req.params.placeId;
+    const id = req.params.id;
     const page = parseInt(req.query.page);
     let limit = parseInt(req.query.limit);
     if (limit > 50) {
@@ -81,7 +81,7 @@ router.get('/:id/place', async (req, res, next) => {
     const foundFavorites = await Favorite.find({ place: id })
       .limit(limit)
       .skip(startIndex)
-      .populate('user');
+      .populate('User');
     res
       .status(200)
       .json({ foundFavorites, next, previous, totalDocumentCount });
