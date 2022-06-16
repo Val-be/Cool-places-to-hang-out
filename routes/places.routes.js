@@ -79,7 +79,24 @@ router.get('/near', async (req, res, next) => {
     const latitude = parseFloat(req.query.latitude);
     const coordinates = [longitude, latitude];
     const maxDistance = parseInt(req.query.maxDistance);
-    console.log(coordinates, maxDistance);
+    const name = req.query.name;
+    const typology = req.query.type;
+
+    const filter = {
+      geometry: {
+        $nearSphere: {
+          $geometry: { type: 'Point', coordinates },
+          $maxDistance: maxDistance,
+        },
+      },
+    };
+    if (name) {
+      filter.name = name;
+    }
+
+    if (typology) {
+      filter.typology = typology;
+    }
     let errorMessage = '';
     if (
       !longitude ||
@@ -96,14 +113,7 @@ router.get('/near', async (req, res, next) => {
     if (errorMessage.length !== 0) {
       res.status(400).json({ message: errorMessage.trim() });
     }
-    const nearPlaces = await Place.find({
-      geometry: {
-        $nearSphere: {
-          $geometry: { type: 'Point', coordinates },
-          $maxDistance: maxDistance,
-        },
-      },
-    });
+    const nearPlaces = await Place.find(filter);
     res.status(200).json(nearPlaces);
   } catch (error) {
     next(error);
