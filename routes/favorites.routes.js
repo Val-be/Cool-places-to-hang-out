@@ -37,7 +37,7 @@ router.get('/:id/user', async (req, res, next) => {
     const foundFavorites = await Favorite.find({ user: id })
       .limit(limit)
       .skip(startIndex)
-      .populate('User');
+      .populate('user place', { username: 1, name: 1 });
     res
       .status(200)
       .json({ foundFavorites, next, previous, totalDocumentCount });
@@ -81,7 +81,7 @@ router.get('/:id/place', async (req, res, next) => {
     const foundFavorites = await Favorite.find({ place: id })
       .limit(limit)
       .skip(startIndex)
-      .populate('User');
+      .populate('user place', { username: 1, name: 1 });
     res
       .status(200)
       .json({ foundFavorites, next, previous, totalDocumentCount });
