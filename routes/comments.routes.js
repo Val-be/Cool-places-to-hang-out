@@ -7,7 +7,6 @@ const isAdminOrPoster = require('../middleware/isAdminOrPoster');
 router.get('/:id/user', async (req, res, next) => {
   try {
     const userId = req.params.id;
-    console.log(userId);
     const page = parseInt(req.query.page);
     let limit = parseInt(req.query.limit);
     if (limit > 50) {
@@ -38,7 +37,7 @@ router.get('/:id/user', async (req, res, next) => {
     const foundComments = await Comment.find({ user: userId })
       .limit(limit)
       .skip(startIndex)
-      .populate('user');
+      .populate('user place', { username: 1, name: 1 });
     console.log(foundComments);
     res.status(200).json({ foundComments, next, previous, totalDocumentCount });
   } catch (error) {
@@ -81,7 +80,7 @@ router.get('/:id/place', async (req, res, next) => {
     const foundComments = await Comment.find({ place: placeId })
       .limit(limit)
       .skip(startIndex)
-      .populate('user');
+      .populate('user place', { username: 1, name: 1 });
     res.status(200).json({ foundComments, next, previous, totalDocumentCount });
   } catch (error) {
     next(error);
