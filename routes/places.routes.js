@@ -16,8 +16,17 @@ router.get('/', async (req, res, next) => {
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
+    const name = req.query.name;
+    const typology = req.query.type;
 
     const filter = {};
+    if (name) {
+      filter.name = name;
+    }
+
+    if (typology) {
+      filter.typology = typology;
+    }
 
     const totalDocumentCount = await Place.countDocuments(filter);
 
