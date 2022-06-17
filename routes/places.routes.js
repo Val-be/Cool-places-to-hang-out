@@ -125,13 +125,16 @@ router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const userId = req.user._id;
     const { address } = req.body;
-    console.log(address);
-    const geocode = await axios.get(
-      `https://geocode.maps.co/search?q={${address}}`
-    );
-    console.log(geocode);
-    const longitude = parseFloat(geocode.data[0].lon);
-    const latitude = parseFloat(geocode.data[0].lat);
+    let longitude = 0;
+    let latitude = 0;
+    if (address) {
+      const geocode = await axios.get(
+        `https://geocode.maps.co/search?q={${address}}`
+      );
+      console.log(geocode);
+      longitude = parseFloat(geocode.data[0].lon);
+      latitude = parseFloat(geocode.data[0].lat);
+    }
     const geometry = { type: 'Point', coordinates: [longitude, latitude] };
     const createdPlace = await Place.create({
       ...req.body,
