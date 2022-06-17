@@ -19,7 +19,7 @@ Favourite Model :
 The favourite model has connection with the user & place model.
 
 Place Model:
-This model has a connection with the user model and have fields like : name,address, geomatory & typology
+This model has a connection with the user model and have fields like : name,address, geometry & typology
 
 User Model :
 This model has fields like : name , password , email & role
