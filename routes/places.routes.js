@@ -1,6 +1,6 @@
 const { request } = require('express');
 const isAdminOrPoster = require('../middleware/isAdminOrPoster');
-const isLoggedIn = require('../middleware/isloggedin');
+const isLoggedIn = require('../middleware/isLoggedin');
 const Place = require('../models/Place.model');
 const router = require('express').Router();
 const { default: axios } = require('axios');
@@ -46,7 +46,9 @@ router.get('/', async (req, res, next) => {
           }
         : null;
 
-    const results = await Place.find(filter)
+    const results = await Place.find(filter, {
+      geometry: 0,
+    })
       .limit(limit)
       .skip(startIndex)
       .populate('user');
