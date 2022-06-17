@@ -55,7 +55,7 @@ function convertRawGreenSpacesToSchema(greenSpace) {
 
 //Seeds the DB
 async function seedDB() {
-  // await connect();
+  await connect();
   await Place.deleteMany();
   try {
     const formatedTerrasses = rawTerrasses
